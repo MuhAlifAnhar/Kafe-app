@@ -1,6 +1,6 @@
 @extends('backend.template.main')
 
-@section('title', 'Bahan Baku')
+@section('title', 'Bahan Baku Masuk')
 
 @section('content')
 
@@ -15,7 +15,7 @@
                 </li>
                 <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark"
                         href="{{ route('panel.dashboard.index') }}">Dashboard</a></li>
-                <li class="breadcrumb-item text-sm text-dark active pb-3" aria-current="page">Bahan Baku</li>
+                <li class="breadcrumb-item text-sm text-dark active pb-3" aria-current="page">Bahan Baku Masuk</li>
             </ol>
         </nav>
         <div class="row">
@@ -24,9 +24,9 @@
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                             <div class="d-flex justify-content-between">
-                                <h6 class="text-white text-capitalize ps-3">Daftar Bahan Baku</h6>
-                                <a href="{{ route('panel.raw-material.create') }}" class="btn btn-sm btn-primary me-3"><i
-                                        class="fas fa-plus me-1"></i> Tambah</a>
+                                <h6 class="text-white text-capitalize ps-3">Daftar Bahan Baku Masuk</h6>
+                                <a href="{{ route('panel.incoming-raw-material.create') }}"
+                                    class="btn btn-sm btn-primary me-3"><i class="fas fa-plus me-1"></i> Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -52,10 +52,10 @@
                                             Name</th>
                                         {{-- <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Category</th>
+                                            Category</th> --}}
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Stock</th> --}}
+                                            Waktu Pembalian</th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Unit</th>
@@ -65,24 +65,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($rawMaterials as $material)
+                                    @forelse ($incomingRawMaterials as $materiall)
                                         <tr>
                                             <td class="text-center">
-                                                {{ ($rawMaterials->currentPage() - 1) * $rawMaterials->perPage() + $loop->iteration }}
+                                                {{ ($incomingRawMaterials->currentPage() - 1) * $incomingRawMaterials->perPage() + $loop->iteration }}
                                             </td>
-                                            <td class="text-center">{{ $material->name }}</td>
-                                            {{-- <td class="text-center">{{ $material->category->name }}</td>
-                                            <td class="text-center">{{ $material->stock }}</td> --}}
-                                            <td class="text-center">{{ $material->unit }}</td>
+                                            <td class="text-center">{{ $materiall->material->name }}</td>
+                                            <td class="text-center">{{ $materiall->tanggal_pembelian }}</td>
+                                            {{-- <td class="text-center">{{ $material->stock }}</td> --}}
+                                            <td class="text-center">{{ $materiall->unit }}</td>
                                             <td>
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('panel.raw-material.edit', $material->uuid) }}"
+                                                    <a href="{{ route('panel.incoming-raw-material.edit', $materiall->uuid) }}"
                                                         class="btn btn-info">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
 
-                                                    <button class="btn btn-danger" onclick="deleteRawMaterial(this)"
-                                                        data-uuid="{{ $material->uuid }}">
+                                                    <button class="btn btn-danger" onclick="deleteIncomingRawMaterial(this)"
+                                                        data-uuid="{{ $materiall->uuid }}">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
 
@@ -98,7 +98,7 @@
                             </table>
                             {{-- pagination --}}
                             <div class="mt-3 justify-content-center" style="margin-left: 20px; margin-right: 20px;">
-                                {{ $rawMaterials->links('pagination::bootstrap-5') }}
+                                {{ $incomingRawMaterials->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
-            const deleteRawMaterial = (e) => {
+            const deleteIncomingRawMaterial = (e) => {
                 let uuid = e.getAttribute('data-uuid')
 
                 Swal.fire({
@@ -127,7 +127,7 @@
                     if (result.value) {
                         $.ajax({
                             type: "DELETE",
-                            url: `/panel/raw-material/${uuid}`,
+                            url: `/panel/incoming-raw-material/${uuid}`,
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },

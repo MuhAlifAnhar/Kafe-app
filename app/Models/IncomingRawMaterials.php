@@ -4,34 +4,31 @@ namespace App\Models;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Category extends Model
+class IncomingRawMaterials extends Model
 {
     use HasFactory;
 
-    protected $table = 'categories';
+    protected $table = 'incoming_raw_materials';
 
-    protected $fillable =
-    [
+    protected $fillable = [
         'uuid',
-        'name',
-        'slug',
+        'material_id',
+        'tanggal_pembelian',
+        'unit',
     ];
 
     public static function booted()
     {
         static::creating(function ($model) {
             $model->uuid = Str::uuid();
-            $model->slug = Str::slug($model->name);
         });
     }
 
-    // relasi one to many
-    public function rawMaterial(): HasMany
+    public function material(): BelongsTo
     {
-        return $this->hasMany(RawMaterial::class);
+        return $this->belongsTo(RawMaterial::class, 'material_id','id');
     }
-
 }

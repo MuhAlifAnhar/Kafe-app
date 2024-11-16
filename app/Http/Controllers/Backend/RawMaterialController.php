@@ -16,7 +16,7 @@ class RawMaterialController extends Controller
         private CategoryService $categoryService
         )
     {
-        
+
     }
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class RawMaterialController extends Controller
     public function create()
     {
         return view('backend.raw-material.create', [
-            'categories' => $this->categoryService->select()
+            // 'categories' => $this->categoryService->select()
         ]);
     }
 
@@ -48,7 +48,7 @@ class RawMaterialController extends Controller
         try {
             RawMaterial::create($data);
 
-            return redirect()->route('panel.raw-material.index')->with('success', 'Data raw material berhasil disimpan');
+            return redirect()->route('panel.raw-material.index')->with('success', 'Data bahan baku berhasil disimpan');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -68,8 +68,8 @@ class RawMaterialController extends Controller
     public function edit(string $uuid)
     {
         return view('backend.raw-material.edit', [
-            'rawMaterial' => $this->rawMaterialService->selectFirstBy('uuid', $uuid),
-            'categories' => $this->categoryService->select()
+            'rawMaterial' => $this->rawMaterialService->selectFirstBy('uuid', $uuid)
+            // 'categories' => $this->categoryService->select()
         ]);
     }
 
@@ -85,7 +85,7 @@ class RawMaterialController extends Controller
 
             $getRawMaterial->update($data);
 
-            return redirect()->route('panel.raw-material.index')->with('success', 'Data raw material berhasil diupdate');
+            return redirect()->route('panel.raw-material.index')->with('success', 'Data bahan baku berhasil diupdate');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -101,7 +101,7 @@ class RawMaterialController extends Controller
         $getRawMaterial->delete();
 
         return response()->json([
-            'message' => 'Data raw material berhasil dihapus'
+            'message' => 'Data bahan baku berhasil dihapus'
         ]);
     }
 }

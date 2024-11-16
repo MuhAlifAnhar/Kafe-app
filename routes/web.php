@@ -1,15 +1,18 @@
 <?php
 
-use App\Http\Controllers\Backend\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\MenuController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\EventController;
+use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\ServiceController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\RawMaterialController;
+use App\Http\Controllers\Backend\IncomingRawMaterialController;
 
 Route::get('/', function () {
     return view('frontend.home');
@@ -28,6 +31,12 @@ Route::prefix('panel')->group(function () {
 
     Route::resource('raw-material', RawMaterialController::class)
     ->names('panel.raw-material');
+
+    Route::resource('incoming-raw-material', IncomingRawMaterialController::class)
+    ->names('panel.incoming-raw-material');
+
+    Route::resource('product', ProductController::class)
+        ->names('panel.product');
 });
 
 Auth::routes();

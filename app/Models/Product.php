@@ -2,36 +2,31 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Category extends Model
+class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $table = 'categories';
+    protected $table = 'products';
 
-    protected $fillable =
-    [
+    protected $fillable = [
         'uuid',
         'name',
-        'slug',
+        'description',
+        'price',
+        'stock',
+        'image',
     ];
-
-    public static function booted()
+    protected static function booted()
     {
         static::creating(function ($model) {
             $model->uuid = Str::uuid();
-            $model->slug = Str::slug($model->name);
         });
     }
-
-    // relasi one to many
-    public function rawMaterial(): HasMany
-    {
-        return $this->hasMany(RawMaterial::class);
-    }
-
 }

@@ -1,6 +1,6 @@
 @extends('backend.template.main')
 
-@section('title', 'Edit Bahan Baku')
+@section('title', 'Edit Bahan Baku Masuk')
 
 @section('content')
     <div class="container-fluid py-4">
@@ -14,8 +14,8 @@
                 <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark"
                         href="{{ route('panel.dashboard.index') }}">Dashboard</a></li>
                 <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark"
-                        href="{{ route('panel.raw-material.index') }}">Bahan Baku</a></li>
-                <li class="breadcrumb-item text-sm text-dark active pb-3" aria-current="page">Edit Bahan Baku</li>
+                        href="{{ route('panel.raw-material.index') }}">Bahan Baku Masuk</a></li>
+                <li class="breadcrumb-item text-sm text-dark active pb-3" aria-current="page">Edit Bahan Baku Masuk</li>
             </ol>
         </nav>
         <div class="row">
@@ -24,7 +24,7 @@
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                             <div class="d-flex justify-content-between">
-                                <h6 class="text-white text-capitalize ps-3">Edit Bahan Baku</h6>
+                                <h6 class="text-white text-capitalize ps-3">Edit Bahan Baku Masuk</h6>
                             </div>
                         </div>
                     </div>
@@ -36,20 +36,40 @@
                     @endif
 
                     <div class="card-body px-0 pb-2">
-                        <form action="{{ route('panel.raw-material.update', $rawMaterial->uuid) }}" method="post"
-                            class="p-3">
+                        <form action="{{ route('panel.incoming-raw-material.update', $incomingRawMaterial->uuid) }}"
+                            method="post" class="p-3">
                             @csrf
                             @method('PUT')
-
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
-                                        <label for="name" class="form-label">Name</label>
-                                        <input type="text"
-                                            class="form-control border px-3 @error('name') is-invalid @enderror"
-                                            value="{{ old('name', $rawMaterial->name) }}" name="name" id="name">
+                                        <label for="material_id" class="form-label">Bahan Baku</label>
+                                        <select name="material_id" id="material_id"
+                                            class="form-select border ps-2 pe-4 @error('material_id') is-invalid @enderror">
+                                            <option value="" disabled selected> == Choose Bahan Baku ==</option>
+                                            @foreach ($materials as $material)
+                                                <option value="{{ $material->id }}"
+                                                    {{ $material->id == $incomingRawMaterial->material_id ? 'selected' : '' }}>
+                                                    {{ $material->name }}</option>
+                                            @endforeach
+                                        </select>
 
-                                        @error('name')
+                                        @error('material_id')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="tanggal_pembelian" class="form-label">Tanggal Pembelian</label>
+                                        <input type="date"
+                                            class="form-control border px-3 @error('tanggal_pembelian') is-invalid @enderror"
+                                            value="{{ old('tanggal_pembelian', $incomingRawMaterial->tanggal_pembelian) }}"
+                                            name="tanggal_pembelian" id="tanggal_pembelian"
+                                            placeholder="Masukkan tanggal pembelian">
+
+                                        @error('tanggal_pembelian')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -64,7 +84,7 @@
                                             class="form-select border ps-2 pe-4 @error('category_id') is-invalid @enderror">
                                             <option value="" disabled selected> == Choose Category ==</option>
                                             @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{ $category->id == $rawMaterial->category_id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
                                             @endforeach
                                         </select>
 
@@ -75,12 +95,14 @@
                                         @enderror
                                     </div>
                                 </div> --}}
+
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
                                         <label for="unit" class="form-label">Unit</label>
                                         <input type="text"
                                             class="form-control border px-3 @error('unit') is-invalid @enderror"
-                                            value="{{ old('unit', $rawMaterial->unit) }}" name="unit" id="unit">
+                                            value="{{ old('unit', $incomingRawMaterial->unit) }}" name="unit"
+                                            id="unit">
 
                                         @error('unit')
                                             <span class="invalid-feedback" role="alert">
@@ -97,7 +119,8 @@
                                         <label for="stock" class="form-label">Stock</label>
                                         <input type="number"
                                             class="form-control border px-3 @error('stock') is-invalid @enderror"
-                                            value="{{ old('stock', $rawMaterial->stock) }}" name="stock" id="stock">
+                                            value="{{ old('stock') }}" name="stock" id="stock"
+                                            placeholder="Enter stock">
 
                                         @error('stock')
                                             <span class="invalid-feedback" role="alert">
@@ -112,7 +135,8 @@
                                         <label for="unit" class="form-label">Unit</label>
                                         <input type="text"
                                             class="form-control border px-3 @error('unit') is-invalid @enderror"
-                                            value="{{ old('unit', $rawMaterial->unit) }}" name="unit" id="unit">
+                                            value="{{ old('unit') }}" name="unit" id="unit"
+                                            placeholder="Enter unit">
 
                                         @error('unit')
                                             <span class="invalid-feedback" role="alert">
@@ -124,7 +148,8 @@
                             </div>
 
                             <div class="float-end">
-                                <a href="{{ route('panel.raw-material.index') }}" class="btn btn-secondary me-2">Back</a>
+                                <a href="{{ route('panel.incoming-raw-material.index') }}"
+                                    class="btn btn-secondary me-2">Back</a>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
                         </form>

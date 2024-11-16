@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RawMaterialRequest extends FormRequest
+class IncomingRawMaterialRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,8 @@ class RawMaterialRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|min:3',
+            'material_id' => 'required|exists:raw_materials,id',
+            'tanggal_pembelian' => 'required|date',
             'unit' => 'required',
         ];
     }

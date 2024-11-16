@@ -11,11 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('raw_materials', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid');
+            $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->string('unit');
+            $table->text('description')->nullable();
+            $table->decimal('price', 8, 2);
+            $table->integer('stock');
+            $table->string('image')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('raw_materials');
+        Schema::dropIfExists('products');
     }
 };
