@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Frontend\MapController;
 use App\Http\Controllers\Backend\EventController;
 use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\MenuController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Frontend\AboutController;
@@ -17,12 +18,15 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\FrontendController;
 use App\Http\Controllers\Backend\ForecastingController;
 use App\Http\Controllers\Backend\RawMaterialController;
+use App\Http\Controllers\Payment\OrderStatusController;
+use App\Http\Controllers\Payment\TransactionController;
 use App\Http\Controllers\Backend\RawMaterialStockController;
 use App\Http\Controllers\Backend\RawMaterialUsageController;
 use App\Http\Controllers\Frontend\EventController as FrontendEventController;
-use App\Http\Controllers\Frontend\FrontendController;
 
 Route::get('/', [FrontendController::class, 'index'])
     ->name('frontend.home');
@@ -145,6 +149,41 @@ Route::prefix('panel')->middleware('auth')->group(function () {
         Route::put('/{uuid}/change-role', [UserController::class, 'changeRole'])->name('change-role');
     });
 });
+
+// Payment
+Route::post('/shopping-cart/add/{name}', [CartController::class, 'addToCart'])->name('shopping-cart.add');
+Route::get('/shopping-cart', [CartController::class, 'index'])->name('shopping-cart.index');
+Route::delete('/shopping-cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('shopping-cart.remove');
+
+// Perbarui kuantitas produk di keranjang
+Route::put('/shopping-cart/update-quantity/{id}', [CartController::class, 'updateQuantity'])->name('shopping-cart.update-quantity');
+
+// Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout-process');
+
+// routes/web.php
+Route::post('/checkout-process', [CheckoutController::class, 'process'])->name('checkout-process');
+
+Route::get('/checkout/{transactionId}', [CheckoutController::class, 'showCheckout'])->name('checkout.show');
+
+// Halaman sukses checkout (opsional, jika Anda memerlukan halaman sukses terpisah)
+Route::get('/checkout/success/{id}', [CheckoutController::class, 'success'])->name('checkout-success');
+
+Route::get('/checkout/pending/{id}', [CheckoutController::class, 'pending'])->name('checkout-pending');
+
+Route::get('/checkout/failed/{id}', [CheckoutController::class, 'failed'])->name('checkout-failed');
+
+
+Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions');
+
+Route::get('/laporan/cetak-pdf', [TransactionController::class, 'cetakPDF'])->name('laporan.cetakPDF');
+
+Route::post('/invoice/generate', [TransactionController::class, 'generateInvoice'])->name('invoice.generate');
+
+Route::get('/order-status', [OrderStatusController::class, 'index'])->name('order_status.index');
+
+Route::put('/order-status/{id}', [OrderStatusController::class, 'update'])->name('order_status.update');
+
+Route::post('/order_status/{id}/create', [OrderStatusController::class, 'create'])->name('order_status.create');
 
 Auth::routes();
 
