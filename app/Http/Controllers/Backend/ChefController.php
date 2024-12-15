@@ -27,6 +27,10 @@ class ChefController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.chef.index')->with('error', 'Anda tidak memiliki izin untuk menambah data chef.');
+        }
+
         return view('backend.chef.create');
     }
 
@@ -65,6 +69,10 @@ class ChefController extends Controller
      */
     public function edit(string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.chef.index')->with('error', 'Anda tidak memiliki izin untuk mengedit data chef.');
+        }
+
         return view('backend.chef.edit', [
             'chef' => $this->chefService->selectFirstBy('uuid', $uuid),
         ]);
@@ -75,6 +83,11 @@ class ChefController extends Controller
      */
     public function update(ChefRequest $request, string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.event.index')->with('error', 'Anda tidak memiliki izin untuk memperbarui event.');
+        }
+
+
         $data = $request->validated();
 
         try {
@@ -99,6 +112,12 @@ class ChefController extends Controller
      */
     public function destroy(string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return response()->json([
+                'message' => 'Anda tidak memiliki izin untuk menghapus data chef.',
+            ], 403);
+        }
+
         $chef = $this->chefService->selectFirstBy('uuid', $uuid);
 
         if ($chef->photo) {

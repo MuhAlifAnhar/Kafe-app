@@ -30,7 +30,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('backend.categories.create');
+        return redirect()->route('panel.category.index')->with('error', 'Anda tidak memiliki izin untuk menambah kategori.');
     }
 
     /**
@@ -62,6 +62,11 @@ class CategoryController extends Controller
      */
     public function edit(string $uuid)
     {
+
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.category.index')->with('error', 'Anda tidak memiliki izin untuk mengedit kategori.');
+        }
+
         return view('backend.categories.edit', [
             'category' => $this->categoryService->selectFirstBy('uuid', $uuid)
         ]);
@@ -72,6 +77,10 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.category.index')->with('error', 'Anda tidak memiliki izin untuk memperbarui kategori.');
+        }
+
         $data = $request->validated();
 
         $category = $this->categoryService->selectFirstBy('uuid', $uuid);
@@ -90,6 +99,12 @@ class CategoryController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
+        if (auth()->user()->role === 'owner') {
+            return response()->json([
+                'message' => 'Anda tidak memiliki izin untuk menghapus kategori.'
+            ], 403);
+        }
+        
         $category = $this->categoryService->selectFirstBy('uuid', $uuid);
 
         $category->delete();

@@ -30,6 +30,10 @@ class RawMaterialController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.raw-material.index')->with('error', 'Anda tidak memiliki izin untuk menambah data raw material.');
+        }
+
         return view('backend.raw-material.create', [
             'categories' => $this->categoryService->select(),
         ]);
@@ -64,6 +68,10 @@ class RawMaterialController extends Controller
      */
     public function edit(string $uuid): View
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.raw-material.index')->with('error', 'Anda tidak memiliki izin untuk mengedit data raw material.');
+        }
+
         return view('backend.raw-material.edit', [
             'rawMaterial' => $this->rawMaterialService->selectFirstBy('uuid', $uuid),
             'categories' => $this->categoryService->select(),
@@ -75,6 +83,10 @@ class RawMaterialController extends Controller
      */
     public function update(RawMaterialRequest $request, string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.raw-material.index')->with('error', 'Anda tidak memiliki izin untuk menperbarui data raw material.');
+        }
+
         $data = $request->validated();
 
         try {
@@ -93,6 +105,12 @@ class RawMaterialController extends Controller
      */
     public function destroy(string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return response()->json([
+                'message' => 'Anda tidak memiliki izin untuk menghapus data raw material.'
+            ], 403);
+        }
+
         $getRawMaterial = $this->rawMaterialService->selectFirstBy('uuid', $uuid);
 
         $getRawMaterial->delete();

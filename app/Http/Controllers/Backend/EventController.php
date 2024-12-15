@@ -32,6 +32,9 @@ class EventController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.event.index')->with('error', 'Anda tidak memiliki izin untuk memperbarui data event.');
+        }
         return view('backend.event.create', [
             'categories' => $this->categoryService->select(),
         ]);
@@ -72,6 +75,10 @@ class EventController extends Controller
      */
     public function edit(string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.event.index')->with('error', 'Anda tidak memiliki izin untuk mengedit data event.');
+        }
+
         return view('backend.event.edit', [
             'event' => $this->eventService->selectFirstBy('uuid', $uuid),
             'categories' => $this->categoryService->select(),
@@ -83,6 +90,10 @@ class EventController extends Controller
      */
     public function update(EventRequest $request, string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.event.index')->with('error', 'Anda tidak memiliki izin untuk memperbarui data event.');
+        }
+
         $data = $request->validated();
 
         try {
@@ -107,6 +118,12 @@ class EventController extends Controller
      */
     public function destroy(string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return response()->json([
+                'message' => 'Anda tidak memiliki izin untuk menghapus data event.'
+            ], 403);
+        }
+
         $event = $this->eventService->selectFirstBy('uuid', $uuid);
 
         if ($event->image) {

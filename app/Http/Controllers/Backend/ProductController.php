@@ -28,6 +28,10 @@ class ProductController extends Controller
 
     public function create()
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.products.index')->with('error', 'Anda tidak memiliki izin untuk menambah data product.');
+        }
+
         return view('backend.products.create', [
             'categories' => $this->categoryService->select(),
         ]);
@@ -57,6 +61,10 @@ class ProductController extends Controller
 
     public function edit(string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.products.index')->with('error', 'Anda tidak memiliki izin untuk mengedit data product.');
+        }
+
         return view('backend.products.edit', [
             'product' => $this->productService->selectFirstBy('uuid', $uuid),
             'categories' => $this->categoryService->select(),
@@ -65,6 +73,10 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.products.index')->with('error', 'Anda tidak memiliki izin untuk menperbarui data product.');
+        }
+
         $data = $request->validated();
 
         try {
@@ -87,6 +99,12 @@ class ProductController extends Controller
 
     public function destroy(string $uuid)
     {
+        if (auth()->user()->role === 'owner') {
+            return response()->json([
+                'message' => 'Anda tidak memiliki izin untuk menghapus data product.'
+            ], 403);
+        }
+
         $product = $this->productService->selectFirstBy('uuid', $uuid);
 
         if ($product->image) {
