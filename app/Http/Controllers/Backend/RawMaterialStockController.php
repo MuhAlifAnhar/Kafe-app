@@ -43,6 +43,10 @@ class RawMaterialStockController extends Controller
      */
     public function create()
     {
+        if (auth()->user()->role === 'owner') {
+            return redirect()->route('panel.event.index')->with('error', 'Anda tidak memiliki izin untuk memperbarui data raw material stok.');
+        }
+
         return view('backend.raw-material-stock.create', [
             'rawMaterials' => RawMaterial::with('category')->get()
         ]);
